@@ -10,7 +10,6 @@
     </parent>
     <groupId>ru.otus</groupId>
     <artifactId>2022-11-otus-shekhovtsovsu-lesson38</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
     <name>2022-11-otus-shekhovtsovsu-lesson38</name>
     <description>2022-11-otus-shekhovtsovsu-lesson38</description>
     <properties>
@@ -72,8 +71,22 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.2.0</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <mainClass>package.and.MainClass</mainClass>
+                        </manifest>
+                        <manifestEntries>
+                            <Build-Number>${buildNumber}</Build-Number>
+                            <Build-Date>${timestamp}</Build-Date>
+                        </manifestEntries>
+                    </archive>
+                    <finalName>${project.artifactId}</finalName>
+                </configuration>
             </plugin>
         </plugins>
     </build>
