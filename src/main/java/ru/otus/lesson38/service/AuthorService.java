@@ -9,4 +9,5 @@ public interface AuthorService {
 
     List<AuthorDto> getAllAuthore() throws AuthorNotFoundException;
 
+    List<AuthorDto> getAuthorsFallback();
 }

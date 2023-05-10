@@ -1,5 +1,6 @@
 package ru.otus.lesson38.service;
 
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -9,6 +10,7 @@ import ru.otus.lesson38.dao.BookDao;
 import ru.otus.lesson38.dto.CommentDto;
 import ru.otus.lesson38.exception.BookNotFoundException;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,7 +26,14 @@ public class CommentServiceImpl implements CommentService{
 
     @Override
     @Transactional
+    @HystrixCommand(fallbackMethod = "getAllCommentsByBookFallback")
     public List<CommentDto> getAllCommentsByBook(Long id) throws BookNotFoundException {
         return  bookDao.findById(id).orElseThrow(() -> new BookNotFoundException(id)).getComments().stream().map(commentConverter::entityToDto).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<CommentDto> getAllCommentsByBookFallback(Long id) {
+        log.error("Error during getAllCommentsByBook for book id: {}", id);
+        return Collections.emptyList();
     }
 }

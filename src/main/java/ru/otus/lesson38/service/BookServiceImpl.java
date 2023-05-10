@@ -1,5 +1,6 @@
 package ru.otus.lesson38.service;
 
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ import ru.otus.lesson38.model.Author;
 import ru.otus.lesson38.model.Book;
 import ru.otus.lesson38.model.Genre;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,7 +27,6 @@ import java.util.stream.Collectors;
 @Slf4j
 public class BookServiceImpl implements BookService{
 
-
     private final BookDao bookDao;
     private final CommentDao commentDao;
     private final AuthorDao authorDao;
@@ -33,6 +34,7 @@ public class BookServiceImpl implements BookService{
     private final BookConverter bookConverter;
 
     @Override
+    @HystrixCommand(fallbackMethod = "getBooksFallback")
     public List<BookDto> getAllBooks() {
         return bookDao.findAll().stream().map(bookConverter::entityToDto).collect(Collectors.toList());
     }
@@ -54,6 +56,7 @@ public class BookServiceImpl implements BookService{
         return bookConverter.entityToDto(bookDao.save(book));
     }
 
+
     @Override
     @Transactional
     public BookDto updateBook(BookDto bookDto) throws AuthorNotFoundException, GenreNotFoundException {
@@ -63,9 +66,14 @@ public class BookServiceImpl implements BookService{
         return bookConverter.entityToDto(bookDao.save(book));
     }
 
-
     @Override
     public BookDto getBookById(Long id) throws BookNotFoundException {
         return bookConverter.entityToDto(bookDao.findById(id).orElseThrow(() -> new BookNotFoundException(id)));
+    }
+
+    @Override
+    public List<BookDto> getBooksFallback() {
+        log.error("Failed to get all books");
+        return new ArrayList<>();
     }
 }

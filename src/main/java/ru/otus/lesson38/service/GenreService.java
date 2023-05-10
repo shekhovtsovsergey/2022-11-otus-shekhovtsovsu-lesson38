@@ -11,4 +11,5 @@ public interface GenreService {
     GenreDto getGenreById(Long id) throws GenreNotFoundException;
 
 
+    List<GenreDto> fallback();
 }

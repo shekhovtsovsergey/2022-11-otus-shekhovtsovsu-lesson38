@@ -9,4 +9,5 @@ public interface CommentService {
 
     List<CommentDto> getAllCommentsByBook(Long id) throws BookNotFoundException;
 
+    List<CommentDto> getAllCommentsByBookFallback(Long id);
 }

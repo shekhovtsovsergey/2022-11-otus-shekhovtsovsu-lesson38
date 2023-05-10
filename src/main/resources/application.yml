@@ -20,3 +20,12 @@ spring:
     baselineOnMigrate: true
     placeholders:
       schema_name: postgres
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 1000
+      fallback:
+        enabled: true

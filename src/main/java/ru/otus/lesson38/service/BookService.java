@@ -14,5 +14,5 @@ public interface BookService {
     BookDto createBook(BookDto bookDto) throws AuthorNotFoundException, GenreNotFoundException;
     BookDto updateBook(BookDto bookDto) throws AuthorNotFoundException, GenreNotFoundException;
     BookDto getBookById(Long id) throws BookNotFoundException;
-
+    List<BookDto> getBooksFallback();
 }
